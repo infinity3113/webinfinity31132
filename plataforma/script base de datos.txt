@@ -1,0 +1,72 @@
+-- Asegúrate de haber seleccionado tu base de datos en cPanel/phpMyAdmin antes de ejecutar este script.
+
+--
+-- Estructura de la tabla `usuarios`
+-- Guarda la información de los usuarios registrados.
+--
+CREATE TABLE `usuarios` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre_usuario` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `es_admin` TINYINT(1) NOT NULL DEFAULT 0, -- 0 = Usuario normal, 1 = Administrador
+  `fecha_registro` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_nombre_usuario_unico` (`nombre_usuario`),
+  UNIQUE KEY `idx_email_unico` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la tabla `plugins`
+-- Almacena los detalles de cada plugin disponible para la venta.
+-- Incluye campos para la gestión segura de archivos.
+--
+CREATE TABLE `plugins` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(100) NOT NULL,
+  `descripcion_corta` TEXT NOT NULL,
+  `precio` DECIMAL(10, 2) NOT NULL,
+  `nombre_archivo` VARCHAR(255) NOT NULL,   -- Nombre original que ve el usuario al descargar.
+  `nombre_seguro` VARCHAR(255) NOT NULL,    -- Nombre único y seguro del archivo en el servidor.
+  `ruta_archivo` VARCHAR(512) NOT NULL,     -- Ruta física completa donde se guarda el archivo.
+  `fecha_subida` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la tabla `compras`
+-- Tabla de unión que registra qué usuario ha comprado qué plugin.
+--
+CREATE TABLE `compras` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_usuario` INT(11) NOT NULL,
+  `id_plugin` INT(11) NOT NULL,
+  `fecha_compra` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_compras_usuario` (`id_usuario`),
+  KEY `fk_compras_plugin` (`id_plugin`),
+  -- Se añade una restricción para evitar compras duplicadas por el mismo usuario.
+  UNIQUE KEY `idx_usuario_plugin_unico` (`id_usuario`, `id_plugin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Relaciones (Foreign Keys) para la tabla `compras`
+--
+ALTER TABLE `compras`
+  ADD CONSTRAINT `fk_compras_plugin` FOREIGN KEY (`id_plugin`) REFERENCES `plugins` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_compras_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- OPCIONAL: Insertar un usuario administrador para pruebas
+-- Contraseña: "admin" (sin las comillas)
+--
+INSERT INTO `usuarios` (`nombre_usuario`, `email`, `password_hash`, `es_admin`) VALUES
+('admin', 'admin@example.com', '$2y$10$I0y.p0.pFe0g5/k1C/LwzOfg0kI0.GkF2kH9l8.B6yG7yH4g3F9oK', 1);
+
+COMMIT;

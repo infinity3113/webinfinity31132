@@ -18,11 +18,17 @@ if ($conn === null) {
     $error_message = "Error Crítico: No se pudo establecer la conexión con la base de datos.";
 } else {
     $id_usuario_actual = $_SESSION['user_id'];
-    $sql = "SELECT p.id, p.nombre, c.fecha_compra 
+    
+    // --- INICIO DE LA CORRECCIÓN ---
+    // Se agrupan los resultados por el ID del plugin para evitar mostrar duplicados.
+    // Se utiliza MIN(c.fecha_compra) para mostrar la fecha de la primera adquisición.
+    $sql = "SELECT p.id, p.nombre, MIN(c.fecha_compra) as fecha_compra 
             FROM plugins p 
             JOIN compras c ON p.id = c.id_plugin 
             WHERE c.id_usuario = ? 
-            ORDER BY c.fecha_compra DESC";
+            GROUP BY p.id, p.nombre
+            ORDER BY fecha_compra DESC";
+    // --- FIN DE LA CORRECCIÓN ---
     
     $stmt = $conn->prepare($sql);
     if ($stmt) {

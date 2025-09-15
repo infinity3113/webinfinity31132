@@ -10,7 +10,24 @@ if (session_status() === PHP_SESSION_NONE) {
 require 'plataforma/db_config.php';
 
 $plugins = [];
+$plugins_usuario = []; // <--- NUEVO: Array para guardar los plugins del usuario
+
 if (isset($conn) && $conn !== null) {
+    // --- OBTENER PLUGINS DEL USUARIO SI ESTÁ LOGUEADO ---
+    if (isset($_SESSION['user_id'])) {
+        $id_usuario_actual = $_SESSION['user_id'];
+        $sql_usuario = "SELECT id_plugin FROM compras WHERE id_usuario = ?";
+        $stmt_usuario = $conn->prepare($sql_usuario);
+        $stmt_usuario->bind_param("i", $id_usuario_actual);
+        $stmt_usuario->execute();
+        $result_usuario = $stmt_usuario->get_result();
+        while ($row = $result_usuario->fetch_assoc()) {
+            $plugins_usuario[] = $row['id_plugin'];
+        }
+        $stmt_usuario->close();
+    }
+
+    // Obtener todos los plugins
     $sql_plugins = "SELECT id, nombre, descripcion_corta, precio FROM plugins ORDER BY id DESC";
     $result_plugins = $conn->query($sql_plugins);
     if ($result_plugins && $result_plugins->num_rows > 0) {
@@ -242,23 +259,31 @@ if (isset($conn) && $conn !== null) {
                                             <p class="text-text-secondary mb-4 text-sm"><?php echo htmlspecialchars($plugin['descripcion_corta']); ?></p>
                                         </div>
                                         <div class="mt-auto">
-                                            <?php if (floatval($plugin['precio']) > 0): ?>
-                                                <p class="text-3xl font-black gradient-text mb-6">$<?php echo htmlspecialchars($plugin['precio']); ?></p>
-                                                <form action="plataforma/comprar_plugin.php" method="POST">
-                                                    <input type="hidden" name="id_plugin" value="<?php echo $plugin['id']; ?>">
-                                                    <button type="submit" class="w-full bg-accent-secondary text-bg-primary font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300" data-lang="buy_now_btn">
-                                                        Comprar Ahora
-                                                    </button>
-                                                </form>
-                                            <?php else: ?>
-                                                <p class="text-3xl font-black gradient-text mb-6" data-lang="free_text">Gratis</p>
-                                                <form action="plataforma/comprar_plugin.php" method="POST">
-                                                    <input type="hidden" name="id_plugin" value="<?php echo $plugin['id']; ?>">
-                                                    <button type="submit" class="w-full bg-accent-primary text-bg-primary font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300" data-lang="claim_now_btn">
-                                                        Reclamar Ahora
-                                                    </button>
-                                                </form>
-                                            <?php endif; ?>
+                                            <?php
+                                            // --- INICIO DE LA LÓGICA DEL BOTÓN INTELIGENTE ---
+                                            $ya_adquirido = in_array($plugin['id'], $plugins_usuario);
+                                            
+                                            if ($ya_adquirido) {
+                                                // Botón para plugin ya adquirido
+                                                echo '<p class="text-3xl font-black gradient-text mb-6" data-lang="owned_text">Ya Adquirido</p>';
+                                                echo '<a href="plataforma/panel_usuario.php" class="w-full block bg-bg-secondary text-text-secondary font-bold py-3 px-6 rounded-lg border border-border-color cursor-pointer hover:border-accent-primary transition-colors" data-lang="go_to_panel_btn">Ir al Panel</a>';
+                                            } else {
+                                                // Lógica para plugins no adquiridos
+                                                if (floatval($plugin['precio']) > 0) {
+                                                    // Botón para comprar (deshabilitado temporalmente)
+                                                    echo '<p class="text-3xl font-black gradient-text mb-6">$'.htmlspecialchars($plugin['precio']).'</p>';
+                                                    echo '<button type="button" onclick="alert(\'Por los momentos no puedes comprar, pronto se habilitará. Escribe al discord infinity3113 para obtener respuestas.\')" class="w-full bg-accent-secondary text-bg-primary font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300" data-lang="buy_now_btn">Comprar Ahora</button>';
+                                                } else {
+                                                    // Botón para reclamar gratis
+                                                    echo '<p class="text-3xl font-black gradient-text mb-6" data-lang="free_text">Gratis</p>';
+                                                    echo '<form action="plataforma/comprar_plugin.php" method="POST">';
+                                                    echo '<input type="hidden" name="id_plugin" value="'.$plugin['id'].'">';
+                                                    echo '<button type="submit" class="w-full bg-accent-primary text-bg-primary font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300" data-lang="claim_now_btn">Reclamar Ahora</button>';
+                                                    echo '</form>';
+                                                }
+                                            }
+                                            // --- FIN DE LA LÓGICA DEL BOTÓN INTELIGENTE ---
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
@@ -331,7 +356,9 @@ if (isset($conn) && $conn !== null) {
                  <h2 class="text-3xl md:text-5xl font-black tracking-tight" data-lang="contact_title">¿Interesado? Hablemos.</h2>
                  <p class="text-lg text-text-secondary mt-2 max-w-2xl mx-auto mb-8" data-lang="contact_subtitle">Estoy disponible para comisiones personalizadas, soporte o cualquier otra consulta.</p>
                  <a href="#" class="bg-[#5865F2] text-white font-bold py-3 px-8 rounded-lg text-lg hover:scale-105 hover:shadow-2xl hover:shadow-[#5865F2]/20 transition-transform duration-300 inline-flex items-center space-x-3">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.283 4.417c-.02-.02-.04-.039-.06-.059a1.933 1.933 0 0 0-1.077-.52H4.854a1.933 1.933 0 0 0-1.077.52c-.02.02-.04.039-.06.059A1.99 1.99 0 0 0 3 6.132V17.87a1.99 1.99 0 0 0 1.758 1.956.75.75 0 0 0 .196.024H21a.75.75 0 0 0 .196-.024 1.99 1.99 0 0 0 1.758-1.956V6.132a1.99 1.99 0 0 0-.917-1.715zM8.893 14.235a.75.75 0 0 1-1.06 0l-1.5-1.5a.75.75 0 1 1 1.06-1.06l1.5 1.5a.75.75 0 0 1 0 1.06zm4.5 0a.75.75 0 0 1-1.06 0l-1.5-1.5a.75.75 0 0 1 1.06-1.06l1.5 1.5a.75.75 0 0 1 0 1.06zm4.5 0a.75.75 0 0 1-1.06 0l-1.5-1.5a.75.75 0 1 1 1.06-1.06l1.5 1.5a.75.75 0 0 1 0 1.06z"/></svg>
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" role="img">
+                        <path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.165 5.578 1.165 8.197 0a.05.05 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1 .015.019.05.05 0 0 1-.02.066 8.875 8.875 0 0 1-1.248.595.05.05 0 0 0-.01.059c.236.466.51.899.818 1.329a.05.05 0 0 0 .056.019 13.276 13.276 0 0 0 3.995-2.02.051.051 0 0 0 .021-.037c.279-2.985-.093-6.008-.698-9.125a.041.041 0 0 0-.021-.018zM4.522 10.187a1.538 1.538 0 0 1-1.54-1.543 1.54 1.54 0 0 1 1.54-1.543c.849 0 1.54.695 1.54 1.543s-.691 1.543-1.54 1.543zm6.956 0a1.538 1.538 0 0 1-1.54-1.543 1.54 1.54 0 0 1 1.54-1.543c.849 0 1.54.695 1.54 1.543s-.691 1.543-1.54 1.543z"></path>
+                    </svg>
                     <span>infinity3113</span>
                  </a>
              </div>
@@ -411,6 +438,8 @@ if (isset($conn) && $conn !== null) {
                 buy_now_btn: "Comprar Ahora",
                 claim_now_btn: "Reclamar Ahora",
                 free_text: "Gratis",
+                owned_text: "Ya Adquirido",
+                go_to_panel_btn: "Ir al Panel",
                 no_plugins_title: "No hay plugins", no_plugins_desc: "Aún no se han subido plugins. ¡Vuelve pronto!",
                 about_role: "Creador, Programador y Entusiasta de Minecraft",
                 about_desc: "¡Hola! Soy un apasionado desarrollador de plugins de Minecraft. Lo que comenzó como una simple curiosidad por modificar el universo de los cubos, rápidamente se transformó en una verdadera vocación. Mi filosofía se centra en la calidad, el rendimiento y la innovación.",
@@ -433,6 +462,8 @@ if (isset($conn) && $conn !== null) {
                 buy_now_btn: "Buy Now",
                 claim_now_btn: "Claim Now",
                 free_text: "Free",
+                owned_text: "Owned",
+                go_to_panel_btn: "Go to Panel",
                 no_plugins_title: "No Plugins Yet", no_plugins_desc: "No plugins have been uploaded yet. Check back soon!",
                 about_role: "Creator, Coder, and Minecraft Enthusiast",
                 about_desc: "Hello! I am a passionate Minecraft plugin developer. What began as a simple curiosity to modify the world of cubes quickly turned into a true calling. My philosophy centers on quality, performance, and innovation.",

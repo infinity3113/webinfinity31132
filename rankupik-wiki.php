@@ -6,6 +6,12 @@ if (session_status() === PHP_SESSION_NONE) {
 if (!isset($_SESSION['lang'])) {
     $_SESSION['lang'] = 'es';
 }
+if (isset($_GET['lang'])) {
+    $_SESSION['lang'] = $_GET['lang'] === 'en' ? 'en' : 'es';
+    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+    exit();
+}
+
 $page_title = "Wiki - RankupIK";
 ?>
 <!DOCTYPE html>
@@ -66,8 +72,12 @@ $page_title = "Wiki - RankupIK";
                 <span>infinity3113</span>
             </a>
             <div class="flex items-center space-x-6">
-                <a href="/infinityweb/" class="text-sm font-semibold hover:text-accent-primary transition">Inicio</a>
-                <a href="/infinityweb/plataforma/panel_usuario.php" class="text-sm font-semibold hover:text-accent-primary transition">Mi Panel</a>
+                <a href="/infinityweb/" class="text-sm font-semibold hover:text-accent-primary transition" data-lang="nav_home">Inicio</a>
+                <a href="/infinityweb/plataforma/panel_usuario.php" class="text-sm font-semibold hover:text-accent-primary transition" data-lang="nav_panel">Mi Panel</a>
+                 <div class="flex items-center space-x-1 bg-bg-secondary p-1 rounded-lg border border-border-color">
+                    <a href="?lang=es" class="px-3 py-1 text-sm rounded-md transition <?php echo $_SESSION['lang'] === 'es' ? 'bg-accent-primary text-bg-primary font-semibold' : 'text-text-secondary'; ?>">ES</a>
+                    <a href="?lang=en" class="px-3 py-1 text-sm rounded-md transition <?php echo $_SESSION['lang'] === 'en' ? 'bg-accent-primary text-bg-primary font-semibold' : 'text-text-secondary'; ?>">EN</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -78,64 +88,61 @@ $page_title = "Wiki - RankupIK";
                 <h1 class="text-4xl md:text-6xl font-black tracking-tighter">
                     <span class="gradient-text">RankupIK</span> Wiki
                 </h1>
-                <p class="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mt-4">
+                <p class="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mt-4" data-lang="wiki_subtitle">
                     La guía definitiva para instalar, configurar y dominar el plugin RankupIK en tu servidor de Minecraft.
                 </p>
             </div>
 
             <div class="space-y-20">
                  <section id="instalacion">
-                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="download-cloud" class="w-7 h-7 text-accent-primary"></i>Instalación y Dependencias</h2>
+                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="download-cloud" class="w-7 h-7 text-accent-primary"></i><span data-lang="section_installation_title">Instalación y Dependencias</span></h2>
                     <div class="glass-card rounded-2xl p-8 space-y-4 text-text-secondary">
-                        <p>Para instalar RankupIK, primero asegúrate de tener las siguientes dependencias instaladas en tu servidor:</p>
+                        <p data-lang="installation_intro">Para instalar RankupIK, primero asegúrate de tener las siguientes dependencias instaladas en tu servidor:</p>
                         <ul class="list-disc list-inside space-y-2 pl-2">
-                            <li><b class="text-text-primary">LuckPerms</b>: <b class="text-red-400">Obligatorio.</b> El plugin se basa en LuckPerms para gestionar los rangos de los jugadores.</li>
-                            <li><b class="text-text-primary">PlaceholderAPI</b>: <b class="text-yellow-400">Recomendado.</b> Necesario si quieres usar los placeholders del plugin en otros plugins como un scoreboard o un tabulador.</li>
-                            <li><b class="text-text-primary">MythicMobs</b>: <b class="text-green-400">Opcional.</b> Solo es necesario si quieres configurar requisitos de matar mobs personalizados de MythicMobs.</li>
+                            <li><b class="text-text-primary">LuckPerms</b>: <b class="text-red-400" data-lang="dep_required">Obligatorio.</b> <span data-lang="dep_luckperms">El plugin se basa en LuckPerms para gestionar los rangos de los jugadores.</span></li>
+                            <li><b class="text-text-primary">PlaceholderAPI</b>: <b class="text-yellow-400" data-lang="dep_recommended">Recomendado.</b> <span data-lang="dep_papi">Necesario si quieres usar los placeholders del plugin en otros plugins como un scoreboard o un tabulador.</span></li>
+                            <li><b class="text-text-primary">MythicMobs</b>: <b class="text-green-400" data-lang="dep_optional">Opcional.</b> <span data-lang="dep_mythicmobs">Solo es necesario si quieres configurar requisitos de matar mobs personalizados de MythicMobs.</span></li>
                         </ul>
-                        <p class="pt-2">Una vez confirmadas las dependencias, simplemente coloca el archivo <code>RankupIK.jar</code> en la carpeta <code>/plugins</code> de tu servidor y reinícialo. Los archivos de configuración se generarán automáticamente.</p>
+                        <p class="pt-2" data-lang="installation_steps">Una vez confirmadas las dependencias, simplemente coloca el archivo <code>RankupIK.jar</code> en la carpeta <code>/plugins</code> de tu servidor y reinícialo. Los archivos de configuración se generarán automáticamente.</p>
                     </div>
                 </section>
                 
                 <section id="caracteristicas">
-                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="sparkles" class="w-7 h-7 text-accent-primary"></i>Características Principales</h2>
+                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="sparkles" class="w-7 h-7 text-accent-primary"></i><span data-lang="section_features_title">Características Principales</span></h2>
                     <div class="glass-card rounded-2xl p-8 space-y-4 text-text-secondary">
                         <ul class="list-disc list-inside space-y-3 pl-2">
-                            <li><b class="text-text-primary">Progreso por Estadísticas</b>: Olvídate de los rangos por dinero. Los jugadores ascienden cumpliendo objetivos de juego (minar, construir, luchar, explorar, etc.).</li>
-                            <li><b class="text-text-primary">GUIs Interactivas</b>: Menús intuitivos para que los jugadores vean el camino de rangos, su progreso actual hacia el siguiente rango y gestionen sus títulos.</li>
-                            <li><b class="text-text-primary">Sistema Anti-AFK</b>: Detecta jugadores inactivos para pausar su conteo de tiempo de juego e incluye un sistema CAPTCHA para prevenir trampas con máquinas de AFK.</li>
-                            <li><b class="text-text-primary">Títulos Cosméticos</b>: Recompensa a tus jugadores con sufijos personalizables que pueden desbloquear y activar al cumplir ciertos hitos o mediante permisos.</li>
-                            <li><b class="text-text-primary">Altamente Configurable</b>: Personaliza cada aspecto, desde los requisitos de cada rango hasta los ítems que se muestran en las GUIs y los mensajes del plugin.</li>
-                            <li><b class="text-text-primary">Integración con MythicMobs</b>: Crea objetivos que requieran matar mobs personalizados de MythicMobs.</li>
+                            <li><b class="text-text-primary" data-lang="feature_stats_title">Progreso por Estadísticas</b>: <span data-lang="feature_stats_desc">Olvídate de los rangos por dinero. Los jugadores ascienden cumpliendo objetivos de juego (minar, construir, luchar, explorar, etc.).</span></li>
+                            <li><b class="text-text-primary" data-lang="feature_gui_title">GUIs Interactivas</b>: <span data-lang="feature_gui_desc">Menús intuitivos para que los jugadores vean el camino de rangos, su progreso actual hacia el siguiente rango y gestionen sus títulos.</span></li>
+                            <li><b class="text-text-primary" data-lang="feature_afk_title">Sistema Anti-AFK</b>: <span data-lang="feature_afk_desc">Detecta jugadores inactivos para pausar su conteo de tiempo de juego e incluye un sistema CAPTCHA para prevenir trampas con máquinas de AFK.</span></li>
+                            <li><b class="text-text-primary" data-lang="feature_titles_title">Títulos Cosméticos</b>: <span data-lang="feature_titles_desc">Recompensa a tus jugadores con sufijos personalizables que pueden desbloquear y activar al cumplir ciertos hitos o mediante permisos.</span></li>
+                            <li><b class="text-text-primary" data-lang="feature_config_title">Altamente Configurable</b>: <span data-lang="feature_config_desc">Personaliza cada aspecto, desde los requisitos de cada rango hasta los ítems que se muestran en las GUIs y los mensajes del plugin.</span></li>
+                            <li><b class="text-text-primary" data-lang="feature_mm_title">Integración con MythicMobs</b>: <span data-lang="feature_mm_desc">Crea objetivos que requieran matar mobs personalizados de MythicMobs.</span></li>
                         </ul>
                     </div>
                 </section>
                 
                  <section id="guis">
-                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="layout-template" class="w-7 h-7 text-accent-primary"></i>Interfaces Gráficas (GUIs)</h2>
+                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="layout-template" class="w-7 h-7 text-accent-primary"></i><span data-lang="section_guis_title">Interfaces Gráficas (GUIs)</span></h2>
                     <div class="glass-card rounded-2xl p-8 space-y-6 text-text-secondary">
                         <div>
-                            <h3 class="font-semibold text-xl text-text-primary mb-2">GUI de Rangos (`/rankup`)</h3>
-                            <p>Cuando un jugador nuevo ejecuta <code>/rankup</code>, ve una lista de todos los rangos disponibles. Los rangos se muestran con su estado: <b class="text-green-400">Actual</b>, <b class="text-yellow-400">Siguiente</b>, <b class="text-cyan-400">Desbloqueado</b> o <b class="text-red-400">Bloqueado</b>. También presenta un botón para comenzar la aventura y empezar a registrar su progreso.</p>
-                            <p class="text-center mt-4"></p>
+                            <h3 class="font-semibold text-xl text-text-primary mb-2" data-lang="gui_ranks_title">GUI de Rangos (`/rankup`)</h3>
+                            <p data-lang="gui_ranks_desc">Cuando un jugador nuevo ejecuta <code>/rankup</code>, ve una lista de todos los rangos disponibles. Los rangos se muestran con su estado: <b class="text-green-400" data-lang="status_current">Actual</b>, <b class="text-yellow-400" data-lang="status_next">Siguiente</b>, <b class="text-cyan-400" data-lang="status_unlocked">Desbloqueado</b> o <b class="text-red-400" data-lang="status_locked">Bloqueado</b>. También presenta un botón para comenzar la aventura y empezar a registrar su progreso.</p>
                         </div>
                         <div class="border-t border-border-color pt-6">
-                            <h3 class="font-semibold text-xl text-text-primary mb-2">GUI de Progreso (`/rankup`)</h3>
-                            <p>Una vez que el jugador ha comenzado, <code>/rankup</code> le mostrará la GUI de progreso. Aquí verá todos los requisitos para su siguiente rango, con barras de progreso visuales y porcentajes para cada objetivo. El botón inferior le permite ascender una vez que todos los requisitos están completos.</p>
-                            <p class="text-center mt-4"></p>
+                            <h3 class="font-semibold text-xl text-text-primary mb-2" data-lang="gui_progress_title">GUI de Progreso (`/rankup`)</h3>
+                            <p data-lang="gui_progress_desc">Una vez que el jugador ha comenzado, <code>/rankup</code> le mostrará la GUI de progreso. Aquí verá todos los requisitos para su siguiente rango, con barras de progreso visuales y porcentajes para cada objetivo. El botón inferior le permite ascender una vez que todos los requisitos están completos.</p>
                         </div>
                         <div class="border-t border-border-color pt-6">
-                            <h3 class="font-semibold text-xl text-text-primary mb-2">GUI de Títulos (`/rankup titles`)</h3>
-                            <p>Este menú permite a los jugadores ver todos los títulos que han desbloqueado. Pueden seleccionar uno para activarlo como sufijo en el chat o desactivar el que tengan activo. Los títulos bloqueados mostrarán los requisitos necesarios para su obtención.</p>
-                             <p class="text-center mt-4"></p>
+                            <h3 class="font-semibold text-xl text-text-primary mb-2" data-lang="gui_titles_title">GUI de Títulos (`/rankup titles`)</h3>
+                            <p data-lang="gui_titles_desc">Este menú permite a los jugadores ver todos los títulos que han desbloqueado. Pueden seleccionar uno para activarlo como sufijo en el chat o desactivar el que tengan activo. Los títulos bloqueados mostrarán los requisitos necesarios para su obtención.</p>
                         </div>
                     </div>
                 </section>
 
                 <section id="configuracion">
-                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="file-cog" class="w-7 h-7 text-accent-primary"></i>Guía de Configuración (config.yml)</h2>
+                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="file-cog" class="w-7 h-7 text-accent-primary"></i><span data-lang="section_config_title">Guía de Configuración (config.yml)</span></h2>
                     <div class="glass-card rounded-2xl p-8 space-y-4 text-text-secondary">
-                        <p>El archivo <code>config.yml</code> te permite personalizar cada aspecto del plugin. Aquí se detallan las secciones clave:</p>
+                        <p data-lang="config_intro">El archivo <code>config.yml</code> te permite personalizar cada aspecto del plugin. Aquí se detallan las secciones clave:</p>
                         <pre class="bg-bg-primary border border-border-color rounded-lg p-4 text-sm overflow-x-auto"><code>
 # Define el camino que los jugadores deben seguir. El orden es fundamental.
 rank-order:
@@ -189,53 +196,40 @@ titles:
                 </section>
 
                 <section id="comandos">
-                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="terminal" class="w-7 h-7 text-accent-primary"></i>Comandos y Permisos</h2>
+                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="terminal" class="w-7 h-7 text-accent-primary"></i><span data-lang="section_commands_title">Comandos y Permisos</span></h2>
                     <div class="glass-card rounded-2xl p-8">
-                         <p class="mb-6 text-text-secondary">El permiso de administrador para los comandos de gestión es <code>rankupik.admin</code>.</p>
+                         <p class="mb-6 text-text-secondary" data-lang="commands_intro">El permiso de administrador para los comandos de gestión es <code>rankupik.admin</code>.</p>
                         <div class="divide-y divide-border-color">
-                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup</b>: Abre la GUI principal.</p></div>
-                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup titles</b>: Abre el menú de títulos.</p></div>
-                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup top &lt;estadística&gt;</b>: Muestra la tabla de clasificación. (Permiso: <code>rankupik.top</code>)</p></div>
-                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup help</b>: Muestra una lista de todos los comandos.</p></div>
-                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup variables</b>: Lista todas las variables de requisitos que puedes usar en la config.</p></div>
-                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup placeholders</b>: Muestra todos los placeholders de PlaceholderAPI disponibles.</p></div>
-                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup reload</b>: Recarga la configuración. (Admin)</p></div>
-                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup force &lt;jugador&gt; &lt;rango&gt;</b>: Establece a un jugador en un rango específico. (Admin)</p></div>
-                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup reset &lt;jugador&gt;</b>: Borra todos los datos de progreso de un jugador. (Admin)</p></div>
-                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup setstat &lt;jugador&gt; &lt;stat&gt; &lt;valor&gt;</b>: Asigna un valor a una estadística de un jugador. (Admin)</p></div>
+                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup</b>: <span data-lang="cmd_rankup">Abre la GUI principal.</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup titles</b>: <span data-lang="cmd_titles">Abre el menú de títulos.</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup top &lt;estadística&gt;</b>: <span data-lang="cmd_top">Muestra la tabla de clasificación. (Permiso: <code>rankupik.top</code>)</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup help</b>: <span data-lang="cmd_help">Muestra una lista de todos los comandos.</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup variables</b>: <span data-lang="cmd_variables">Lista todas las variables de requisitos que puedes usar en la config.</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-text-primary">/rankup placeholders</b>: <span data-lang="cmd_placeholders">Muestra todos los placeholders de PlaceholderAPI disponibles.</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup reload</b>: <span data-lang="cmd_reload">Recarga la configuración. (Admin)</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup force &lt;jugador&gt; &lt;rango&gt;</b>: <span data-lang="cmd_force">Establece a un jugador en un rango específico. (Admin)</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup reset &lt;jugador&gt;</b>: <span data-lang="cmd_reset">Borra todos los datos de progreso de un jugador. (Admin)</span></p></div>
+                            <div class="py-4"><p><b class="font-mono text-accent-secondary">/rankup setstat &lt;jugador&gt; &lt;stat&gt; &lt;valor&gt;</b>: <span data-lang="cmd_setstat">Asigna un valor a una estadística de un jugador. (Admin)</span></p></div>
                         </div>
                     </div>
                 </section>
 
                 <section id="placeholders">
-                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="at-sign" class="w-7 h-7 text-accent-primary"></i>Placeholders</h2>
+                    <h2 class="text-3xl font-bold border-b-2 border-border-color pb-3 mb-6 flex items-center gap-3"><i data-lucide="at-sign" class="w-7 h-7 text-accent-primary"></i><span data-lang="section_placeholders_title">Placeholders</span></h2>
                     <div class="glass-card rounded-2xl p-8 space-y-4 text-text-secondary">
-                        <p>Si tienes PlaceholderAPI, puedes usar los siguientes placeholders en otros plugins. Se dividen en dos categorías:</p>
+                        <p data-lang="placeholders_intro">Si tienes PlaceholderAPI, puedes usar los siguientes placeholders en otros plugins. Se dividen en dos categorías:</p>
                         <div>
-                            <h3 class="font-semibold text-lg text-text-primary mb-2">Estadísticas de Rango (se reinician)</h3>
-                            <p>Estas estadísticas reflejan el progreso del jugador para su rango <b class="text-text-primary">actual</b>. Se reinician según tu configuración.</p>
-                            <ul class="list-disc list-inside space-y-1 pl-2 mt-2">
-                                <li><code>%rankupik_playtime_seconds%</code> - Tiempo de juego en segundos.</li>
-                                <li><code>%rankupik_playtime_formatted%</code> - Tiempo de juego en formato D/H/M/S.</li>
-                                <li><code>%rankupik_blocks_mined_&lt;MATERIAL&gt;%</code> - Bloques minados de un tipo específico.</li>
-                                <li><code>%rankupik_mobs_killed_&lt;MOB&gt;%</code> - Mobs asesinados de un tipo específico.</li>
-                                <li>Y muchos más... usa <code>/rankup placeholders</code> para ver la lista completa.</li>
-                            </ul>
+                            <h3 class="font-semibold text-lg text-text-primary mb-2" data-lang="placeholders_rank_title">Estadísticas de Rango (se reinician)</h3>
+                            <p data-lang="placeholders_rank_desc">Estas estadísticas reflejan el progreso del jugador para su rango <b class="text-text-primary">actual</b>. Se reinician según tu configuración.</p>
                         </div>
                          <div class="border-t border-border-color pt-4">
-                            <h3 class="font-semibold text-lg text-text-primary mb-2">Estadísticas Globales (nunca se reinician)</h3>
-                            <p>Estas estadísticas acumulan el progreso del jugador a lo largo de <b class="text-text-primary">toda su historia</b> en el servidor.</p>
-                            <ul class="list-disc list-inside space-y-1 pl-2 mt-2">
-                                <li><code>%rankupik_global_playtime_seconds%</code></li>
-                                <li><code>%rankupik_global_playtime_formatted%</code></li>
-                                <li><code>%rankupik_global_blocks_mined_&lt;MATERIAL&gt;%</code></li>
-                                <li>...y todos los demás con el prefijo <code>global_</code>.</li>
-                            </ul>
+                            <h3 class="font-semibold text-lg text-text-primary mb-2" data-lang="placeholders_global_title">Estadísticas Globales (nunca se reinician)</h3>
+                            <p data-lang="placeholders_global_desc">Estas estadísticas acumulan el progreso del jugador a lo largo de <b class="text-text-primary">toda su historia</b> en el servidor.</p>
                         </div>
                          <div class="border-t border-border-color pt-4">
-                            <h3 class="font-semibold text-lg text-text-primary mb-2">Otros Placeholders</h3>
+                            <h3 class="font-semibold text-lg text-text-primary mb-2" data-lang="placeholders_other_title">Otros Placeholders</h3>
                              <ul class="list-disc list-inside space-y-1 pl-2 mt-2">
-                                <li><code>%rankupik_active_title_suffix%</code> - Muestra el sufijo del título activo del jugador.</li>
+                                <li data-lang="placeholder_suffix"><code>%rankupik_active_title_suffix%</code> - Muestra el sufijo del título activo del jugador.</li>
                              </ul>
                         </div>
                     </div>
@@ -245,11 +239,151 @@ titles:
     </main>
     <footer class="border-t border-border-color py-8 mt-auto">
         <div class="container mx-auto px-6 text-center text-text-secondary text-sm">
-            <p>&copy; <?php echo date("Y"); ?> infinity3113. Todos los derechos reservados.</p>
+            <p>&copy; <?php echo date("Y"); ?> infinity3113. <span data-lang="footer_rights">Todos los derechos reservados.</span></p>
         </div>
     </footer>
     <script>
         lucide.createIcons();
+        
+        const translations = {
+            es: {
+                nav_home: "Inicio",
+                nav_panel: "Mi Panel",
+                wiki_subtitle: "La guía definitiva para instalar, configurar y dominar el plugin RankupIK en tu servidor de Minecraft.",
+                section_installation_title: "Instalación y Dependencias",
+                installation_intro: "Para instalar RankupIK, primero asegúrate de tener las siguientes dependencias instaladas en tu servidor:",
+                dep_required: "Obligatorio.",
+                dep_recommended: "Recomendado.",
+                dep_optional: "Opcional.",
+                dep_luckperms: "El plugin se basa en LuckPerms para gestionar los rangos de los jugadores.",
+                dep_papi: "Necesario si quieres usar los placeholders del plugin en otros plugins como un scoreboard o un tabulador.",
+                dep_mythicmobs: "Solo es necesario si quieres configurar requisitos de matar mobs personalizados de MythicMobs.",
+                installation_steps: "Una vez confirmadas las dependencias, simplemente coloca el archivo <code>RankupIK.jar</code> en la carpeta <code>/plugins</code> de tu servidor y reinícialo. Los archivos de configuración se generarán automáticamente.",
+                section_features_title: "Características Principales",
+                feature_stats_title: "Progreso por Estadísticas",
+                feature_stats_desc: "Olvídate de los rangos por dinero. Los jugadores ascienden cumpliendo objetivos de juego (minar, construir, luchar, explorar, etc.).",
+                feature_gui_title: "GUIs Interactivas",
+                feature_gui_desc: "Menús intuitivos para que los jugadores vean el camino de rangos, su progreso actual hacia el siguiente rango y gestionen sus títulos.",
+                feature_afk_title: "Sistema Anti-AFK",
+                feature_afk_desc: "Detecta jugadores inactivos para pausar su conteo de tiempo de juego e incluye un sistema CAPTCHA para prevenir trampas con máquinas de AFK.",
+                feature_titles_title: "Títulos Cosméticos",
+                feature_titles_desc: "Recompensa a tus jugadores con sufijos personalizables que pueden desbloquear y activar al cumplir ciertos hitos o mediante permisos.",
+                feature_config_title: "Altamente Configurable",
+                feature_config_desc: "Personaliza cada aspecto, desde los requisitos de cada rango hasta los ítems que se muestran en las GUIs y los mensajes del plugin.",
+                feature_mm_title: "Integración con MythicMobs",
+                feature_mm_desc: "Crea objetivos que requieran matar mobs personalizados de MythicMobs.",
+                section_guis_title: "Interfaces Gráficas (GUIs)",
+                gui_ranks_title: "GUI de Rangos (`/rankup`)",
+                gui_ranks_desc: "Cuando un jugador nuevo ejecuta `/rankup`, ve una lista de todos los rangos disponibles. Los rangos se muestran con su estado: ",
+                status_current: "Actual",
+                status_next: "Siguiente",
+                status_unlocked: "Desbloqueado",
+                status_locked: "Bloqueado",
+                gui_progress_title: "GUI de Progreso (`/rankup`)",
+                gui_progress_desc: "Una vez que el jugador ha comenzado, `/rankup` le mostrará la GUI de progreso. Aquí verá todos los requisitos para su siguiente rango, con barras de progreso visuales y porcentajes para cada objetivo. El botón inferior le permite ascender una vez que todos los requisitos están completos.",
+                gui_titles_title: "GUI de Títulos (`/rankup titles`)",
+                gui_titles_desc: "Este menú permite a los jugadores ver todos los títulos que han desbloqueado. Pueden seleccionar uno para activarlo como sufijo en el chat o desactivar el que tengan activo. Los títulos bloqueados mostrarán los requisitos necesarios para su obtención.",
+                section_config_title: "Guía de Configuración (config.yml)",
+                config_intro: "El archivo <code>config.yml</code> te permite personalizar cada aspecto del plugin. Aquí se detallan las secciones clave:",
+                section_commands_title: "Comandos y Permisos",
+                commands_intro: "El permiso de administrador para los comandos de gestión es <code>rankupik.admin</code>.",
+                cmd_rankup: "Abre la GUI principal.",
+                cmd_titles: "Abre el menú de títulos.",
+                cmd_top: "Muestra la tabla de clasificación. (Permiso: <code>rankupik.top</code>)",
+                cmd_help: "Muestra una lista de todos los comandos.",
+                cmd_variables: "Lista todas las variables de requisitos que puedes usar en la config.",
+                cmd_placeholders: "Muestra todos los placeholders de PlaceholderAPI disponibles.",
+                cmd_reload: "Recarga la configuración. (Admin)",
+                cmd_force: "Establece a un jugador en un rango específico. (Admin)",
+                cmd_reset: "Borra todos los datos de progreso de un jugador. (Admin)",
+                cmd_setstat: "Asigna un valor a una estadística de un jugador. (Admin)",
+                section_placeholders_title: "Placeholders",
+                placeholders_intro: "Si tienes PlaceholderAPI, puedes usar los siguientes placeholders en otros plugins. Se dividen en dos categorías:",
+                placeholders_rank_title: "Estadísticas de Rango (se reinician)",
+                placeholders_rank_desc: "Estas estadísticas reflejan el progreso del jugador para su rango <b>actual</b>. Se reinician según tu configuración.",
+                placeholders_global_title: "Estadísticas Globales (nunca se reinician)",
+                placeholders_global_desc: "Estas estadísticas acumulan el progreso del jugador a lo largo de <b>toda su historia</b> en el servidor.",
+                placeholders_other_title: "Otros Placeholders",
+                placeholder_suffix: "<code>%rankupik_active_title_suffix%</code> - Muestra el sufijo del título activo del jugador.",
+                footer_rights: "Todos los derechos reservados."
+            },
+            en: {
+                nav_home: "Home",
+                nav_panel: "My Panel",
+                wiki_subtitle: "The definitive guide to install, configure, and master the RankupIK plugin on your Minecraft server.",
+                section_installation_title: "Installation and Dependencies",
+                installation_intro: "To install RankupIK, first ensure you have the following dependencies installed on your server:",
+                dep_required: "Required.",
+                dep_recommended: "Recommended.",
+                dep_optional: "Optional.",
+                dep_luckperms: "The plugin is based on LuckPerms to manage player ranks.",
+                dep_papi: "Necessary if you want to use the plugin's placeholders in other plugins like a scoreboard or a tab list.",
+                dep_mythicmobs: "Only necessary if you want to configure custom MythicMobs mob kill requirements.",
+                installation_steps: "Once the dependencies are confirmed, simply place the <code>RankupIK.jar</code> file in your server's <code>/plugins</code> folder and restart it. The configuration files will be generated automatically.",
+                section_features_title: "Main Features",
+                feature_stats_title: "Progression by Statistics",
+                feature_stats_desc: "Forget about ranks based on money. Players rank up by completing in-game objectives (mining, building, fighting, exploring, etc.).",
+                feature_gui_title: "Interactive GUIs",
+                feature_gui_desc: "Intuitive menus for players to see the rank path, their current progress towards the next rank, and manage their titles.",
+                feature_afk_title: "Anti-AFK System",
+                feature_afk_desc: "Detects inactive players to pause their playtime count and includes a CAPTCHA system to prevent cheating with AFK machines.",
+                feature_titles_title: "Cosmetic Titles",
+                feature_titles_desc: "Reward your players with customizable suffixes that they can unlock and activate upon reaching certain milestones or through permissions.",
+                feature_config_title: "Highly Configurable",
+                feature_config_desc: "Customize every aspect, from the requirements for each rank to the items displayed in the GUIs and the plugin's messages.",
+                feature_mm_title: "MythicMobs Integration",
+                feature_mm_desc: "Create objectives that require killing custom mobs from MythicMobs.",
+                section_guis_title: "Graphical User Interfaces (GUIs)",
+                gui_ranks_title: "Ranks GUI (`/rankup`)",
+                gui_ranks_desc: "When a new player runs `/rankup`, they see a list of all available ranks. The ranks are displayed with their status: ",
+                status_current: "Current",
+                status_next: "Next",
+                status_unlocked: "Unlocked",
+                status_locked: "Locked",
+                gui_progress_title: "Progress GUI (`/rankup`)",
+                gui_progress_desc: "Once the player has started, `/rankup` will show them the progress GUI. Here they will see all the requirements for their next rank, with visual progress bars and percentages for each objective. The bottom button allows them to rank up once all requirements are complete.",
+                gui_titles_title: "Titles GUI (`/rankup titles`)",
+                gui_titles_desc: "This menu allows players to see all the titles they have unlocked. They can select one to activate it as a suffix in the chat or deactivate the current one. Locked titles will show the necessary requirements to obtain them.",
+                section_config_title: "Configuration Guide (config.yml)",
+                config_intro: "The <code>config.yml</code> file allows you to customize every aspect of the plugin. Here are the key sections:",
+                section_commands_title: "Commands and Permissions",
+                commands_intro: "The administrator permission for management commands is <code>rankupik.admin</code>.",
+                cmd_rankup: "Opens the main GUI.",
+                cmd_titles: "Opens the titles menu.",
+                cmd_top: "Displays the leaderboard. (Permission: <code>rankupik.top</code>)",
+                cmd_help: "Displays a list of all commands.",
+                cmd_variables: "Lists all the requirement variables you can use in the config.",
+                cmd_placeholders: "Shows all available PlaceholderAPI placeholders.",
+                cmd_reload: "Reloads the configuration. (Admin)",
+                cmd_force: "Sets a player to a specific rank. (Admin)",
+                cmd_reset: "Deletes all progress data for a player. (Admin)",
+                cmd_setstat: "Assigns a value to a player's statistic. (Admin)",
+                section_placeholders_title: "Placeholders",
+                placeholders_intro: "If you have PlaceholderAPI, you can use the following placeholders in other plugins. They are divided into two categories:",
+                placeholders_rank_title: "Rank Statistics (resettable)",
+                placeholders_rank_desc: "These statistics reflect the player's progress for their <b>current</b> rank. They are reset according to your configuration.",
+                placeholders_global_title: "Global Statistics (never reset)",
+                placeholders_global_desc: "These statistics accumulate the player's progress throughout their <b>entire history</b> on the server.",
+                placeholders_other_title: "Other Placeholders",
+                placeholder_suffix: "<code>%rankupik_active_title_suffix%</code> - Displays the player's active title suffix.",
+                footer_rights: "All rights reserved."
+            }
+        };
+
+        function setLanguage(lang) {
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                const key = el.getAttribute('data-lang');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentLang = document.documentElement.lang;
+            setLanguage(currentLang);
+        });
+
     </script>
 </body>
 </html>

@@ -103,7 +103,7 @@ if (isset($conn) && $conn !== null) {
             <div class="hidden md:flex items-center space-x-8">
                 <a href="#about" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_about">Sobre Mí</a>
                 <a href="#plugins" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_plugins">Plugins</a>
-                <a href="wiki.php" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_wiki">Wiki</a>
+                <a href="#wiki" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_wiki">Wiki</a>
                 <a href="#contact" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_contact">Contacto</a>
             </div>
 
@@ -133,7 +133,7 @@ if (isset($conn) && $conn !== null) {
             <div class="flex flex-col items-center space-y-4 p-6">
                 <a href="#about" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_about_mobile">Sobre Mí</a>
                 <a href="#plugins" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_plugins_mobile">Plugins</a>
-                <a href="wiki.php" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_wiki_mobile">Wiki</a>
+                <a href="#wiki" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_wiki_mobile">Wiki</a>
                 <a href="#contact" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_contact_mobile">Contacto</a>
                  <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="/infinityweb/plataforma/panel_usuario.php" class="flex items-center space-x-2 text-sm bg-bg-primary px-4 py-2 rounded-lg border border-border-color hover:border-accent-primary transition w-full justify-center">
@@ -286,18 +286,42 @@ if (isset($conn) && $conn !== null) {
                     <h2 class="text-3xl md:text-5xl font-black tracking-tight" data-lang="wiki_title">Wiki & Documentación</h2>
                     <p class="text-lg text-text-secondary mt-2 max-w-2xl mx-auto" data-lang="wiki_subtitle">Guías detalladas y explicaciones para sacar el máximo provecho a mis plugins.</p>
                 </div>
-                <div class="glass-card rounded-2xl p-8 md:p-12">
-                    <div class="flex flex-col md:flex-row items-center gap-8">
-                        <div class="md:w-1/4 text-center">
-                           <i data-lucide="gem" class="w-24 h-24 text-accent-secondary mx-auto"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <div class="glass-card rounded-2xl p-8 md:p-12 flex flex-col">
+                        <div class="flex-grow flex flex-col md:flex-row items-center gap-8">
+                            <div class="md:w-1/4 text-center">
+                               <i data-lucide="gem" class="w-24 h-24 text-accent-secondary mx-auto"></i>
+                            </div>
+                            <div class="md:w-3/4">
+                                <a href="wiki.php" class="text-2xl font-bold mb-3 gradient-text hover:brightness-125 transition" data-lang="slotmachine_title">SlotMachine Plugin</a>
+                                <p class="text-text-secondary" data-lang="slotmachine_desc">
+                                    Añade una máquina tragamonedas funcional y personalizable. Ideal para economías de servidor que buscan añadir un elemento de suerte y diversión.
+                                </p>
+                            </div>
                         </div>
-                        <div class="md:w-3/4">
-                            <a href="wiki.php" class="text-2xl font-bold mb-3 gradient-text hover:brightness-125 transition" data-lang="slotmachine_title">SlotMachine Plugin</a>
-                            <p class="text-text-secondary" data-lang="slotmachine_desc">
-                                El plugin SlotMachine añade una máquina tragamonedas totalmente funcional y personalizable a tu servidor. Permite a los jugadores apostar dinero del juego para tener la oportunidad de ganar premios increíbles. Es altamente configurable, desde los porcentajes de ganancia hasta los ítems que se pueden obtener. Ideal para economías de servidor que buscan añadir un elemento de suerte y diversión.
-                            </p>
+                        <div class="mt-6 text-center">
+                            <a href="wiki.php" class="font-bold text-accent-primary hover:text-accent-secondary transition">Ver Documentación &rarr;</a>
                         </div>
                     </div>
+
+                    <div class="glass-card rounded-2xl p-8 md:p-12 flex flex-col">
+                        <div class="flex-grow flex flex-col md:flex-row items-center gap-8">
+                            <div class="md:w-1/4 text-center">
+                               <i data-lucide="bar-chart-4" class="w-24 h-24 text-accent-primary mx-auto"></i>
+                            </div>
+                            <div class="md:w-3/4">
+                                <a href="rankupik-wiki.php" class="text-2xl font-bold mb-3 gradient-text hover:brightness-125 transition">RankupIK Plugin</a>
+                                <p class="text-text-secondary">
+                                    Un sistema de rangos avanzado donde los jugadores ascienden cumpliendo objetivos basados en sus estadísticas de juego, como minería, combate y más.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <a href="rankupik-wiki.php" class="font-bold text-accent-primary hover:text-accent-secondary transition">Ver Documentación &rarr;</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -391,7 +415,7 @@ if (isset($conn) && $conn !== null) {
                 about_role: "Creador, Programador y Entusiasta de Minecraft",
                 about_desc: "¡Hola! Soy un apasionado desarrollador de plugins de Minecraft. Lo que comenzó como una simple curiosidad por modificar el universo de los cubos, rápidamente se transformó en una verdadera vocación. Mi filosofía se centra en la calidad, el rendimiento y la innovación.",
                 wiki_title: "Wiki & Documentación", wiki_subtitle: "Guías detalladas y explicaciones para sacar el máximo provecho a mis plugins.",
-                slotmachine_title: "SlotMachine Plugin", slotmachine_desc: "El plugin SlotMachine añade una máquina tragamonedas totalmente funcional y personalizable a tu servidor. Permite a los jugadores apostar dinero del juego para tener la oportunidad de ganar premios increíbles. Es altamente configurable, desde los porcentajes de ganancia hasta los ítems que se pueden obtener. Ideal para economías de servidor que buscan añadir un elemento de suerte y diversión.",
+                slotmachine_title: "SlotMachine Plugin", slotmachine_desc: "Añade una máquina tragamonedas funcional y personalizable. Ideal para economías de servidor que buscan añadir un elemento de suerte y diversión.",
                 contact_title: "¿Interesado? Hablemos.", contact_subtitle: "Estoy disponible para comisiones personalizadas, soporte o cualquier otra consulta.",
                 contact_cta: "Contactar por Email",
                 footer_love: "Hecho con ❤️ para la comunidad de Minecraft."

@@ -6,7 +6,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
     
-    $sql = "SELECT id, nombre_usuario, password_hash, es_admin FROM usuarios WHERE nombre_usuario = ? OR email = ?";
+    // Se añade is_banned a la consulta
+    $sql = "SELECT id, nombre_usuario, password_hash, es_admin, is_banned FROM usuarios WHERE nombre_usuario = ? OR email = ?";
     $stmt = $conn->prepare($sql);
     
     if ($stmt) {
@@ -16,6 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
+
+            // --- INICIO DE LA CORRECCIÓN ---
+            // Verificar si el usuario está baneado ANTES de verificar la contraseña
+            if ($user['is_banned'] == 1) {
+                $_SESSION['error_message'] = "Tu cuenta ha sido suspendida.";
+                header("Location: login.php");
+                exit();
+            }
+            // --- FIN DE LA CORRECCIÓN ---
+
             if (password_verify($password, $user['password_hash'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['nombre_usuario'];

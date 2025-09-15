@@ -11,13 +11,20 @@ require 'plantilla_header.php';
             </h2>
         </div>
         
-        <?php if (isset($_SESSION['error_message'])): ?>
+        <?php 
+        // --- INICIO DE LA CORRECCIÓN ---
+        // Lógica mejorada para mostrar mensajes de error de forma segura
+        if (isset($_SESSION['error_message'])): 
+            $error_message = $_SESSION['error_message'];
+            unset($_SESSION['error_message']); // Limpiamos el mensaje para que no se repita
+        ?>
             <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg" role="alert">
                 <strong class="font-bold">Error:</strong>
-                <span><?php echo $_SESSION['error_message']; ?></span>
+                <span><?php echo htmlspecialchars($error_message); ?></span>
             </div>
-            <?php unset($_SESSION['error_message']); ?>
-        <?php endif; ?>
+        <?php endif; 
+        // --- FIN DE LA CORRECCIÓN ---
+        ?>
 
         <form class="mt-8 space-y-6 glass-card p-8 rounded-2xl" action="procesar_login.php" method="POST">
             <div class="rounded-md shadow-sm -space-y-px">

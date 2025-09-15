@@ -1,11 +1,19 @@
-<?php 
+<?php
 // Iniciar sesión en la cabecera para que esté disponible en todas las páginas
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['lang'])) {
+    $_SESSION['lang'] = 'es';
+}
+if (isset($_GET['lang'])) {
+    $_SESSION['lang'] = $_GET['lang'] === 'en' ? 'en' : 'es';
+    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+    exit();
+}
 ?>
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="<?php echo $_SESSION['lang']; ?>" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,10 +49,33 @@ if (session_status() === PHP_SESSION_NONE) {
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
         }
-        /* FIX: Asegura que el texto dentro de los inputs sea blanco */
-        input, textarea {
-            color: var(--text-primary);
+
+        /* --- INICIO DE LA CORRECCIÓN DEFINITIVA --- */
+
+        /* Esta regla asegura que el texto que escribes sea siempre visible */
+        .appearance-none {
+            color: var(--text-primary) !important;
+            background-color: var(--bg-secondary) !important;
         }
+
+        /* Regla para el placeholder */
+        .placeholder-text-secondary::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7; /* Ligeramente más visible */
+        }
+
+        /* Regla para el autocompletado de Chrome/Safari */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-text-fill-color: var(--text-primary) !important;
+            -webkit-box-shadow: 0 0 0 30px var(--bg-secondary) inset !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+        
+        /* --- FIN DE LA CORRECCIÓN --- */
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -65,6 +96,11 @@ if (session_status() === PHP_SESSION_NONE) {
                     <a href="/infinityweb/plataforma/login.php" class="text-sm font-semibold hover:text-accent-primary transition">Iniciar Sesión</a>
                     <a href="/infinityweb/plataforma/registro.php" class="bg-accent-primary text-bg-primary font-bold py-2 px-4 rounded-lg text-sm hover:scale-105 transition-transform duration-300">Registrarse</a>
                 <?php endif; ?>
+
+                <div class="flex items-center space-x-1 bg-bg-secondary p-1 rounded-lg border border-border-color">
+                    <a href="?lang=es" class="px-3 py-1 text-sm rounded-md transition <?php echo $_SESSION['lang'] === 'es' ? 'bg-accent-primary text-bg-primary font-semibold' : 'text-text-secondary'; ?>">ES</a>
+                    <a href="?lang=en" class="px-3 py-1 text-sm rounded-md transition <?php echo $_SESSION['lang'] === 'en' ? 'bg-accent-primary text-bg-primary font-semibold' : 'text-text-secondary'; ?>">EN</a>
+                </div>
             </div>
         </nav>
     </header>

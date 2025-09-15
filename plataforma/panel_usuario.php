@@ -12,7 +12,7 @@ require 'db_config.php';
 // Preparamos los datos que necesitaremos
 $plugins_comprados = [];
 $total_plugins = 0;
-$error_message = null; // Variable para almacenar mensajes de error
+$error_message = null; 
 
 if ($conn === null) {
     $error_message = "Error Crítico: No se pudo establecer la conexión con la base de datos.";
@@ -47,16 +47,13 @@ if ($conn === null) {
 ?>
 
 <div class="py-12">
-    <!-- Encabezado del Panel -->
     <div>
-        <h1 class="text-3xl font-bold">Bienvenido a tu Panel, <span class="gradient-text"><?php echo htmlspecialchars($_SESSION['username']); ?></span></h1>
-        <p class="text-text-secondary mt-1">Gestiona tu cuenta y accede a todos tus productos desde un solo lugar.</p>
+        <h1 class="text-3xl font-bold" data-lang="welcome_message">Bienvenido a tu Panel, <span class="gradient-text"><?php echo htmlspecialchars($_SESSION['username']); ?></span></h1>
+        <p class="text-text-secondary mt-1" data-lang="panel_subtitle">Gestiona tu cuenta y accede a todos tus productos desde un solo lugar.</p>
     </div>
 
-    <!-- Contenido Principal del Panel (Layout de 2 columnas) -->
     <div class="mt-10 md:flex md:space-x-8">
 
-        <!-- Columna Izquierda: Resumen de Cuenta -->
         <aside class="md:w-1/3 lg:w-1/4 mb-8 md:mb-0">
             <div class="glass-card rounded-2xl p-6 sticky top-24">
                 <div class="flex items-center space-x-4 mb-6">
@@ -65,36 +62,35 @@ if ($conn === null) {
                     </div>
                     <div>
                         <h3 class="font-bold text-lg"><?php echo htmlspecialchars($_SESSION['username']); ?></h3>
-                        <p class="text-xs text-text-secondary">Cliente</p>
+                        <p class="text-xs text-text-secondary" data-lang="customer_role">Cliente</p>
                     </div>
                 </div>
                 <div class="space-y-4 text-sm">
                     <div class="flex justify-between items-center">
-                        <span class="text-text-secondary">Plugins Comprados:</span>
+                        <span class="text-text-secondary" data-lang="plugins_purchased">Plugins Comprados:</span>
                         <span class="font-bold bg-accent-secondary/10 text-accent-secondary py-1 px-2 rounded-md"><?php echo $total_plugins; ?></span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-text-secondary">Rango:</span>
-                        <span class="font-bold text-text-primary">Usuario</span>
+                        <span class="text-text-secondary" data-lang="rank">Rango:</span>
+                        <span class="font-bold text-text-primary" data-lang="rank_user">Usuario</span>
                     </div>
                 </div>
-                <a href="#" class="mt-6 block w-full text-center bg-bg-secondary border border-border-color rounded-lg py-2 text-sm font-semibold hover:border-accent-primary transition">
+                <a href="#" class="mt-6 block w-full text-center bg-bg-secondary border border-border-color rounded-lg py-2 text-sm font-semibold hover:border-accent-primary transition" data-lang="account_settings">
                     Ajustes de Cuenta
                 </a>
             </div>
         </aside>
 
-        <!-- Columna Derecha: Lista de Plugins -->
         <div class="md:w-2/3 lg:w-3/4">
             <div class="glass-card rounded-2xl p-8">
                 <h2 class="text-2xl font-bold mb-6 border-b border-border-color pb-4 flex items-center space-x-2">
                     <i data-lucide="library" class="w-6 h-6"></i>
-                    <span>Mi Biblioteca de Plugins</span>
+                    <span data-lang="plugin_library">Mi Biblioteca de Plugins</span>
                 </h2>
                 <div class="space-y-4">
                     <?php if ($error_message !== null): ?>
                         <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg" role="alert">
-                            <strong class="font-bold">¡Ups! Hubo un problema:</strong>
+                            <strong class="font-bold" data-lang="oops_problem">¡Ups! Hubo un problema:</strong>
                             <span class="block sm:inline"><?php echo htmlspecialchars($error_message); ?></span>
                         </div>
                     <?php elseif ($total_plugins > 0): ?>
@@ -106,7 +102,7 @@ if ($conn === null) {
                                         <h3 class="font-semibold text-lg"><?php echo htmlspecialchars($plugin['nombre']); ?></h3>
                                     </div>
                                     <p class="text-xs text-text-secondary ml-9">
-                                        Adquirido el: 
+                                        <span data-lang="acquired_on">Adquirido el:</span> 
                                         <?php 
                                             $date = new DateTime($plugin['fecha_compra']);
                                             echo $date->format('d/m/Y'); 
@@ -115,16 +111,16 @@ if ($conn === null) {
                                 </div>
                                 <a href="descargar.php?id=<?php echo $plugin['id']; ?>" class="w-full sm:w-auto bg-accent-primary text-bg-primary font-bold py-2 px-4 rounded-lg text-sm hover:scale-105 transition-transform duration-300 flex items-center justify-center space-x-2">
                                     <i data-lucide="download-cloud" class="w-4 h-4"></i>
-                                    <span>Descargar</span>
+                                    <span data-lang="download_button">Descargar</span>
                                 </a>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="text-center py-8">
                             <i data-lucide="shopping-cart" class="w-12 h-12 text-text-secondary mx-auto mb-4"></i>
-                            <h3 class="font-bold text-lg">Tu biblioteca está vacía</h3>
-                            <p class="text-text-secondary text-sm">Aún no has comprado ningún plugin.</p>
-                            <a href="/infinityweb/" class="mt-4 inline-block bg-accent-primary text-bg-primary font-bold py-2 px-4 rounded-lg text-sm hover:scale-105 transition-transform duration-300">
+                            <h3 class="font-bold text-lg" data-lang="library_empty">Tu biblioteca está vacía</h3>
+                            <p class="text-text-secondary text-sm" data-lang="no_plugins_bought">Aún no has comprado ningún plugin.</p>
+                            <a href="/infinityweb/" class="mt-4 inline-block bg-accent-primary text-bg-primary font-bold py-2 px-4 rounded-lg text-sm hover:scale-105 transition-transform duration-300" data-lang="explore_plugins">
                                 Explorar Plugins
                             </a>
                         </div>

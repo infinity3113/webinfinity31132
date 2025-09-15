@@ -10,6 +10,7 @@ CREATE TABLE `usuarios` (
   `email` VARCHAR(100) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
   `es_admin` TINYINT(1) NOT NULL DEFAULT 0, -- 0 = Usuario normal, 1 = Administrador
+  `is_banned` TINYINT(1) NOT NULL DEFAULT 0, -- 0 = No baneado, 1 = Baneado
   `fecha_registro` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_nombre_usuario_unico` (`nombre_usuario`),

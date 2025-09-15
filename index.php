@@ -1,4 +1,11 @@
 <?php
+// --- INICIO DE LA CORRECCIÓN ---
+// Se inicia la sesión para poder comprobar si el usuario está logueado.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// --- FIN DE LA CORRECCIÓN ---
+
 // Conexión a la base de datos para obtener los plugins
 require 'plataforma/db_config.php';
 
@@ -21,19 +28,15 @@ if (isset($conn) && $conn !== null) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infinity3113 - Minecraft Plugin Developer</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     
-    <!-- Swiper.js for Carousel -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -90,7 +93,6 @@ if (isset($conn) && $conn !== null) {
 </head>
 <body class="overflow-x-hidden">
 
-    <!-- Header -->
     <header id="header" class="bg-bg-primary/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-border-color transition-all duration-300">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="/infinityweb/" class="flex items-center space-x-2 text-xl font-bold">
@@ -98,45 +100,57 @@ if (isset($conn) && $conn !== null) {
                 <span>infinity3113</span>
             </a>
 
-            <!-- Desktop Menu -->
             <div class="hidden md:flex items-center space-x-8">
-                <a href="#plugins" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_plugins">Plugins</a>
                 <a href="#about" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_about">Sobre Mí</a>
+                <a href="#plugins" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_plugins">Plugins</a>
+                <a href="wiki.php" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_wiki">Wiki</a>
                 <a href="#contact" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_contact">Contacto</a>
             </div>
 
             <div class="flex items-center space-x-4">
-                 <a href="/infinityweb/plataforma/login.php" class="hidden md:flex items-center space-x-2 text-sm bg-bg-secondary px-4 py-2 rounded-lg border border-border-color hover:border-accent-primary transition">
-                    <i data-lucide="user" class="w-4 h-4"></i>
-                    <span data-lang="nav_account">Mi Cuenta</span>
-                </a>
-                <!-- Language Switcher -->
+                 <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="/infinityweb/plataforma/panel_usuario.php" class="hidden md:flex items-center space-x-2 text-sm bg-bg-secondary px-4 py-2 rounded-lg border border-border-color hover:border-accent-primary transition">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span data-lang="nav_panel">Mi Panel</span>
+                    </a>
+                <?php else: ?>
+                    <a href="/infinityweb/plataforma/login.php" class="hidden md:flex items-center space-x-2 text-sm bg-bg-secondary px-4 py-2 rounded-lg border border-border-color hover:border-accent-primary transition">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span data-lang="nav_account">Mi Cuenta</span>
+                    </a>
+                <?php endif; ?>
+                
                 <div class="flex items-center space-x-1 bg-bg-secondary p-1 rounded-lg border border-border-color">
                     <button id="lang-es" class="px-3 py-1 text-sm rounded-md transition bg-accent-primary text-bg-primary font-semibold">ES</button>
                     <button id="lang-en" class="px-3 py-1 text-sm rounded-md transition text-text-secondary font-semibold">EN</button>
                 </div>
-                <!-- Mobile Menu Button -->
                 <button id="mobile-menu-btn" class="md:hidden">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
         </nav>
-         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-bg-secondary border-t border-border-color">
+         <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-bg-secondary border-t border-border-color">
             <div class="flex flex-col items-center space-y-4 p-6">
-                <a href="#plugins" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_plugins_mobile">Plugins</a>
                 <a href="#about" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_about_mobile">Sobre Mí</a>
+                <a href="#plugins" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_plugins_mobile">Plugins</a>
+                <a href="wiki.php" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_wiki_mobile">Wiki</a>
                 <a href="#contact" class="text-text-secondary hover:text-text-primary transition" data-lang="nav_contact_mobile">Contacto</a>
-                 <a href="/infinityweb/plataforma/login.php" class="flex items-center space-x-2 text-sm bg-bg-primary px-4 py-2 rounded-lg border border-border-color hover:border-accent-primary transition w-full justify-center">
-                    <i data-lucide="user" class="w-4 h-4"></i>
-                    <span data-lang="nav_account_mobile">Mi Cuenta</span>
-                </a>
+                 <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="/infinityweb/plataforma/panel_usuario.php" class="flex items-center space-x-2 text-sm bg-bg-primary px-4 py-2 rounded-lg border border-border-color hover:border-accent-primary transition w-full justify-center">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span data-lang="nav_panel_mobile">Mi Panel</span>
+                    </a>
+                <?php else: ?>
+                     <a href="/infinityweb/plataforma/login.php" class="flex items-center space-x-2 text-sm bg-bg-primary px-4 py-2 rounded-lg border border-border-color hover:border-accent-primary transition w-full justify-center">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span data-lang="nav_account_mobile">Mi Cuenta</span>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section class="h-screen min-h-[600px] flex items-center justify-center text-center relative overflow-hidden">
              <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
              <div class="absolute inset-0 bg-gradient-to-b from-transparent to-bg-primary"></div>
@@ -154,7 +168,6 @@ if (isset($conn) && $conn !== null) {
             </div>
         </section>
 
-        <!-- Features Section -->
         <section id="features" class="py-24">
             <div class="container mx-auto px-6">
                  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -189,59 +202,7 @@ if (isset($conn) && $conn !== null) {
             </div>
         </section>
 
-        <!-- Plugins Carousel Section -->
-        <section id="plugins" class="py-24 bg-bg-secondary">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-12 reveal">
-                    <h2 class="text-3xl md:text-5xl font-black tracking-tight" data-lang="plugins_title">Mis Creaciones</h2>
-                    <p class="text-lg text-text-secondary mt-2 max-w-2xl mx-auto" data-lang="plugins_subtitle">Cada plugin está diseñado con atención al detalle y un enfoque en la calidad.</p>
-                </div>
-
-                <!-- Swiper Carousel -->
-                <div class="swiper plugin-swiper reveal">
-                    <div class="swiper-wrapper">
-                        <?php if (!empty($plugins)): ?>
-                            <?php foreach ($plugins as $plugin): ?>
-                                <div class="swiper-slide h-full">
-                                    <div class="glass-card rounded-2xl p-8 flex flex-col h-full text-center hover:border-accent-secondary transition-colors duration-300">
-                                        <div class="flex-grow">
-                                            <i data-lucide="package-check" class="w-12 h-12 text-accent-secondary mx-auto mb-4"></i>
-                                            <h3 class="text-2xl font-bold mb-2"><?php echo htmlspecialchars($plugin['nombre']); ?></h3>
-                                            <p class="text-text-secondary mb-4 text-sm"><?php echo htmlspecialchars($plugin['descripcion_corta']); ?></p>
-                                        </div>
-                                        <div class="mt-auto">
-                                            <p class="text-3xl font-black gradient-text mb-6">$<?php echo htmlspecialchars($plugin['precio']); ?></p>
-                                            <form action="plataforma/comprar_plugin.php" method="POST">
-                                                <input type="hidden" name="id_plugin" value="<?php echo $plugin['id']; ?>">
-                                                <button type="submit" class="w-full bg-accent-secondary text-bg-primary font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300" data-lang="buy_now_btn">
-                                                    Comprar Ahora
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="swiper-slide">
-                                <div class="glass-card rounded-2xl p-8 text-center">
-                                    <i data-lucide="server-crash" class="w-12 h-12 text-accent-primary mx-auto mb-4"></i>
-                                    <h3 class="text-2xl font-bold mb-2" data-lang="no_plugins_title">No hay plugins</h3>
-                                    <p class="text-text-secondary" data-lang="no_plugins_desc">Aún no se han subido plugins. ¡Vuelve pronto!</p>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <!-- Add Pagination -->
-                    <div class="swiper-pagination mt-8 !relative"></div>
-                    <!-- Add Navigation -->
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About me section -->
-        <section id="about" class="py-24">
+        <section id="about" class="py-24 bg-bg-secondary">
              <div class="container mx-auto px-6 reveal">
                     <div class="glass-card rounded-2xl p-8 md:p-12">
                         <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
@@ -262,13 +223,92 @@ if (isset($conn) && $conn !== null) {
                 </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="py-24 text-center bg-bg-secondary">
+        <section id="plugins" class="py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 reveal">
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight" data-lang="plugins_title">Mis Creaciones</h2>
+                    <p class="text-lg text-text-secondary mt-2 max-w-2xl mx-auto" data-lang="plugins_subtitle">Cada plugin está diseñado con atención al detalle y un enfoque en la calidad.</p>
+                </div>
+
+                <div class="swiper plugin-swiper reveal">
+                    <div class="swiper-wrapper pb-12">
+                        <?php if (!empty($plugins)): ?>
+                            <?php foreach ($plugins as $plugin): ?>
+                                <div class="swiper-slide h-full">
+                                    <div class="glass-card rounded-2xl p-8 flex flex-col h-full text-center hover:border-accent-secondary transition-colors duration-300">
+                                        <div class="flex-grow">
+                                            <i data-lucide="package-check" class="w-12 h-12 text-accent-secondary mx-auto mb-4"></i>
+                                            <h3 class="text-2xl font-bold mb-2"><?php echo htmlspecialchars($plugin['nombre']); ?></h3>
+                                            <p class="text-text-secondary mb-4 text-sm"><?php echo htmlspecialchars($plugin['descripcion_corta']); ?></p>
+                                        </div>
+                                        <div class="mt-auto">
+                                            <?php if (floatval($plugin['precio']) > 0): ?>
+                                                <p class="text-3xl font-black gradient-text mb-6">$<?php echo htmlspecialchars($plugin['precio']); ?></p>
+                                                <form action="plataforma/comprar_plugin.php" method="POST">
+                                                    <input type="hidden" name="id_plugin" value="<?php echo $plugin['id']; ?>">
+                                                    <button type="submit" class="w-full bg-accent-secondary text-bg-primary font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300" data-lang="buy_now_btn">
+                                                        Comprar Ahora
+                                                    </button>
+                                                </form>
+                                            <?php else: ?>
+                                                <p class="text-3xl font-black gradient-text mb-6" data-lang="free_text">Gratis</p>
+                                                <form action="plataforma/comprar_plugin.php" method="POST">
+                                                    <input type="hidden" name="id_plugin" value="<?php echo $plugin['id']; ?>">
+                                                    <button type="submit" class="w-full bg-accent-primary text-bg-primary font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300" data-lang="claim_now_btn">
+                                                        Reclamar Ahora
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="swiper-slide">
+                                <div class="glass-card rounded-2xl p-8 text-center">
+                                    <i data-lucide="server-crash" class="w-12 h-12 text-accent-primary mx-auto mb-4"></i>
+                                    <h3 class="text-2xl font-bold mb-2" data-lang="no_plugins_title">No hay plugins</h3>
+                                    <p class="text-text-secondary" data-lang="no_plugins_desc">Aún no se han subido plugins. ¡Vuelve pronto!</p>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="swiper-pagination mt-8 !relative"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="wiki" class="py-24 bg-bg-secondary">
+            <div class="container mx-auto px-6 reveal">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight" data-lang="wiki_title">Wiki & Documentación</h2>
+                    <p class="text-lg text-text-secondary mt-2 max-w-2xl mx-auto" data-lang="wiki_subtitle">Guías detalladas y explicaciones para sacar el máximo provecho a mis plugins.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-8 md:p-12">
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="md:w-1/4 text-center">
+                           <i data-lucide="gem" class="w-24 h-24 text-accent-secondary mx-auto"></i>
+                        </div>
+                        <div class="md:w-3/4">
+                            <a href="wiki.php" class="text-2xl font-bold mb-3 gradient-text hover:brightness-125 transition" data-lang="slotmachine_title">SlotMachine Plugin</a>
+                            <p class="text-text-secondary" data-lang="slotmachine_desc">
+                                El plugin SlotMachine añade una máquina tragamonedas totalmente funcional y personalizable a tu servidor. Permite a los jugadores apostar dinero del juego para tener la oportunidad de ganar premios increíbles. Es altamente configurable, desde los porcentajes de ganancia hasta los ítems que se pueden obtener. Ideal para economías de servidor que buscan añadir un elemento de suerte y diversión.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-24 text-center">
              <div class="container mx-auto px-6 reveal">
                  <h2 class="text-3xl md:text-5xl font-black tracking-tight" data-lang="contact_title">¿Interesado? Hablemos.</h2>
                  <p class="text-lg text-text-secondary mt-2 max-w-2xl mx-auto mb-8" data-lang="contact_subtitle">Estoy disponible para comisiones personalizadas, soporte o cualquier otra consulta.</p>
-                 <a href="mailto:tuemail@dominio.com" class="bg-accent-primary text-bg-primary font-bold py-3 px-8 rounded-lg text-lg hover:scale-105 hover:shadow-2xl hover:shadow-accent-primary/20 transition-transform duration-300 inline-block" data-lang="contact_cta">
-                    Contactar por Email
+                 <a href="#" class="bg-[#5865F2] text-white font-bold py-3 px-8 rounded-lg text-lg hover:scale-105 hover:shadow-2xl hover:shadow-[#5865F2]/20 transition-transform duration-300 inline-flex items-center space-x-3">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.283 4.417c-.02-.02-.04-.039-.06-.059a1.933 1.933 0 0 0-1.077-.52H4.854a1.933 1.933 0 0 0-1.077.52c-.02.02-.04.039-.06.059A1.99 1.99 0 0 0 3 6.132V17.87a1.99 1.99 0 0 0 1.758 1.956.75.75 0 0 0 .196.024H21a.75.75 0 0 0 .196-.024 1.99 1.99 0 0 0 1.758-1.956V6.132a1.99 1.99 0 0 0-.917-1.715zM8.893 14.235a.75.75 0 0 1-1.06 0l-1.5-1.5a.75.75 0 1 1 1.06-1.06l1.5 1.5a.75.75 0 0 1 0 1.06zm4.5 0a.75.75 0 0 1-1.06 0l-1.5-1.5a.75.75 0 0 1 1.06-1.06l1.5 1.5a.75.75 0 0 1 0 1.06zm4.5 0a.75.75 0 0 1-1.06 0l-1.5-1.5a.75.75 0 1 1 1.06-1.06l1.5 1.5a.75.75 0 0 1 0 1.06z"/></svg>
+                    <span>infinity3113</span>
                  </a>
              </div>
         </section>
@@ -335,8 +375,8 @@ if (isset($conn) && $conn !== null) {
         // Language Translation
         const translations = {
             es: {
-                nav_plugins: "Plugins", nav_about: "Sobre Mí", nav_contact: "Contacto", nav_account: "Mi Cuenta",
-                nav_plugins_mobile: "Plugins", nav_about_mobile: "Sobre Mí", nav_contact_mobile: "Contacto", nav_account_mobile: "Mi Cuenta",
+                nav_about: "Sobre Mí", nav_plugins: "Plugins", nav_wiki: "Wiki", nav_contact: "Contacto", nav_account: "Mi Cuenta", nav_panel: "Mi Panel",
+                nav_about_mobile: "Sobre Mí", nav_plugins_mobile: "Plugins", nav_wiki_mobile: "Wiki", nav_contact_mobile: "Contacto", nav_account_mobile: "Mi Cuenta", nav_panel_mobile: "Mi Panel",
                 hero_title: "Plugins de Minecraft de Calidad Excepcional",
                 hero_subtitle: "Potenciando servidores con herramientas robustas, innovadoras y optimizadas para el mejor rendimiento.",
                 hero_cta: "Explorar Plugins",
@@ -345,16 +385,20 @@ if (isset($conn) && $conn !== null) {
                 feature3_title: "Soporte Confiable", feature3_desc: "Asistencia rápida y eficaz para resolver cualquier duda o problema.",
                 plugins_title: "Mis Creaciones", plugins_subtitle: "Cada plugin está diseñado con atención al detalle y un enfoque en la calidad.",
                 buy_now_btn: "Comprar Ahora",
+                claim_now_btn: "Reclamar Ahora",
+                free_text: "Gratis",
                 no_plugins_title: "No hay plugins", no_plugins_desc: "Aún no se han subido plugins. ¡Vuelve pronto!",
                 about_role: "Creador, Programador y Entusiasta de Minecraft",
                 about_desc: "¡Hola! Soy un apasionado desarrollador de plugins de Minecraft. Lo que comenzó como una simple curiosidad por modificar el universo de los cubos, rápidamente se transformó en una verdadera vocación. Mi filosofía se centra en la calidad, el rendimiento y la innovación.",
+                wiki_title: "Wiki & Documentación", wiki_subtitle: "Guías detalladas y explicaciones para sacar el máximo provecho a mis plugins.",
+                slotmachine_title: "SlotMachine Plugin", slotmachine_desc: "El plugin SlotMachine añade una máquina tragamonedas totalmente funcional y personalizable a tu servidor. Permite a los jugadores apostar dinero del juego para tener la oportunidad de ganar premios increíbles. Es altamente configurable, desde los porcentajes de ganancia hasta los ítems que se pueden obtener. Ideal para economías de servidor que buscan añadir un elemento de suerte y diversión.",
                 contact_title: "¿Interesado? Hablemos.", contact_subtitle: "Estoy disponible para comisiones personalizadas, soporte o cualquier otra consulta.",
                 contact_cta: "Contactar por Email",
                 footer_love: "Hecho con ❤️ para la comunidad de Minecraft."
             },
             en: {
-                nav_plugins: "Plugins", nav_about: "About Me", nav_contact: "Contact", nav_account: "My Account",
-                nav_plugins_mobile: "Plugins", nav_about_mobile: "About Me", nav_contact_mobile: "Contact", nav_account_mobile: "My Account",
+                nav_about: "About Me", nav_plugins: "Plugins", nav_wiki: "Wiki", nav_contact: "Contact", nav_account: "My Account", nav_panel: "My Panel",
+                nav_about_mobile: "About Me", nav_plugins_mobile: "Plugins", nav_wiki_mobile: "Wiki", nav_contact_mobile: "Contact", nav_account_mobile: "My Account", nav_panel_mobile: "My Panel",
                 hero_title: "Minecraft Plugins of Exceptional Quality",
                 hero_subtitle: "Empowering servers with robust, innovative, and performance-optimized tools.",
                 hero_cta: "Explore Plugins",
@@ -363,9 +407,13 @@ if (isset($conn) && $conn !== null) {
                 feature3_title: "Reliable Support", feature3_desc: "Fast and effective assistance to resolve any question or issue.",
                 plugins_title: "My Creations", plugins_subtitle: "Each plugin is designed with attention to detail and a focus on quality.",
                 buy_now_btn: "Buy Now",
+                claim_now_btn: "Claim Now",
+                free_text: "Free",
                 no_plugins_title: "No Plugins Yet", no_plugins_desc: "No plugins have been uploaded yet. Check back soon!",
                 about_role: "Creator, Coder, and Minecraft Enthusiast",
                 about_desc: "Hello! I am a passionate Minecraft plugin developer. What began as a simple curiosity to modify the world of cubes quickly turned into a true calling. My philosophy centers on quality, performance, and innovation.",
+                wiki_title: "Wiki & Documentation", wiki_subtitle: "Detailed guides and explanations to get the most out of my plugins.",
+                slotmachine_title: "SlotMachine Plugin", slotmachine_desc: "The SlotMachine plugin adds a fully functional and customizable slot machine to your server. It allows players to bet in-game money for a chance to win incredible prizes. It is highly configurable, from winning percentages to the items that can be obtained. Ideal for server economies looking to add an element of luck and fun.",
                 contact_title: "Interested? Let's talk.", contact_subtitle: "I am available for custom commissions, support, or any other inquiries.",
                 contact_cta: "Contact via Email",
                 footer_love: "Made with ❤️ for the Minecraft community."
@@ -411,4 +459,3 @@ if (isset($conn) && $conn !== null) {
     </script>
 </body>
 </html>
-
